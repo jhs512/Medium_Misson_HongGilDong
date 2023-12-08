@@ -11,7 +11,7 @@
 
     <ul>
         <li th:each="post : ${posts}">
-            <a href="" th:text="${post.title}"></a>
+            <a th:href="|/post/${post.id}|" th:text="${post.title}"></a>
         </li>
     </ul>
 </div>
