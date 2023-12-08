@@ -3,6 +3,7 @@ package com.ll.medium.domain.member.member.controller;
 import com.ll.medium.domain.member.member.entity.Member;
 import com.ll.medium.domain.member.member.service.MemberService;
 import com.ll.medium.global.rq.Rq.Rq;
+import com.ll.medium.global.rsData.RsData.RsData;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -36,15 +37,15 @@ public class MemberController {
 
     @PostMapping("/join")
     public String join(@Valid JoinForm joinForm) {
-        Member member = memberService.join(joinForm.getUsername(), joinForm.getPassword());
+        RsData<Member> joinRs = memberService.join(joinForm.getUsername(), joinForm.getPassword());
 
-        if (member == null) {
-            return rq.historyBack("이미 존재하는 회원입니다.");
+        if (joinRs.isFail()) {
+            return rq.historyBack(joinRs.getMsg());
         }
 
         return rq.redirect(
                 "/",
-                "%s님 환영합니다. 회원가입이 완료되었습니다. 로그인 후 이용해주세요.".formatted(member.getUsername())
+                joinRs.getMsg()
         );
     }
 }
