@@ -17,7 +17,7 @@ public class MemberService {
     @Transactional
     public Member join(String username, String password) {
         if (findByUsername(username).isPresent()) {
-            throw new IllegalArgumentException("이미 존재하는 회원입니다.");
+            return null;
         }
 
         Member member = new Member(username, password);
