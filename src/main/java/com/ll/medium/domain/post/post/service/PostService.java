@@ -24,4 +24,8 @@ public class PostService {
 
         postRepository.save(post);
     }
+
+    public Object findTop30ByIsPublishedOrderByIdDesc(boolean isPublished) {
+        return postRepository.findTop30ByIsPublishedOrderByIdDesc(isPublished);
+    }
 }
