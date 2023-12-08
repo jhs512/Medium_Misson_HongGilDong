@@ -15,4 +15,10 @@ public class AdmHomeController {
     public String showMain() {
         return "domain/home/home/adm/main";
     }
+
+    @GetMapping("/home/about")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String showAbout() {
+        return "domain/home/home/adm/about";
+    }
 }
