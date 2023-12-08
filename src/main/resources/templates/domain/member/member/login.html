@@ -7,7 +7,7 @@
             form.username.value = form.username.value.trim();
 
             if (form.username.value.length == 0) {
-                alert('사용자 ID를 입력해주세요.');
+                toastWarning('사용자 ID를 입력해주세요.');
                 form.username.focus();
                 return;
             }
@@ -15,7 +15,7 @@
             form.password.value = form.password.value.trim();
 
             if (form.password.value.length == 0) {
-                alert('비밀번호를 입력해주세요.');
+                toastWarning('비밀번호를 입력해주세요.');
                 form.password.focus();
                 return;
             }
