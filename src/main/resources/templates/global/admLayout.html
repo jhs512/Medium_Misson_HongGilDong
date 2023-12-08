@@ -2,7 +2,7 @@
 <html layout:decorate="~{global/layout}">
 
 <head>
-    <title>미디엄 관리자</title>
+    <title layout:title-pattern="$CONTENT_TITLE - $LAYOUT_TITLE admin" th:text="${@appConfig.siteName}"></title>
 </head>
 
 <body>

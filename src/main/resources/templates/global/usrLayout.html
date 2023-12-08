@@ -2,7 +2,7 @@
 <html layout:decorate="~{global/layout}">
 
 <head>
-    <title>미디엄</title>
+    <title layout:title-pattern="$CONTENT_TITLE - $LAYOUT_TITLE" th:text="${@appConfig.siteName}"></title>
 </head>
 
 <body>
