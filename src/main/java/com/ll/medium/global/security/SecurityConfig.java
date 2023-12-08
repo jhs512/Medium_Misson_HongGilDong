@@ -24,6 +24,12 @@ public class SecurityConfig {
         http
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests
+                                .requestMatchers("/gen/**")
+                                .permitAll()
+                                .requestMatchers("/resource/**")
+                                .permitAll()
+                                .requestMatchers("/h2-console/**")
+                                .permitAll()
                                 .requestMatchers("/adm/**")
                                 .hasRole("ADMIN")
                                 .requestMatchers("/**")
