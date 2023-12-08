@@ -7,6 +7,16 @@
 
 <body>
 
+<header layout:fragment="header">
+    <h1 th:text="|${@appConfig.siteName}|"></h1>
+
+    <a href="/">홈</a>
+    <a th:if="${@rq.admin}" href="/adm">관리자 홈</a>
+    <a th:if="${@rq.logout}"  href="/member/login">로그인</a>
+    <a th:if="${@rq.logout}" href="/member/join">회원가입</a>
+    <a th:if="${@rq.login}" href="/member/logout">로그아웃</a>
+</header>
+
 </body>
 
 </html>
