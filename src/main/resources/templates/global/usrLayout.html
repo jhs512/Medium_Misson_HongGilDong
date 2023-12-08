@@ -6,20 +6,27 @@
 
     <title>미디엄</title>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
+    <link href="https://jhs512.github.io/toastr/toastr.css" rel="stylesheet">
+
     <link rel="stylesheet" href="/resource/global/global.css">
     <script src="/resource/global/global.js"></script>
 
     <script>
         const urlParams = getUrlParams(location.href);
-
-        if (urlParams.msg) {
-            alert(urlParams.msg);
-        }
     </script>
 </head>
 <body>
 
 <th:block layout:fragment="content"></th:block>
+
+<script>
+    if (urlParams.msg) {
+        toastNotice(urlParams.msg);
+    }
+</script>
 
 </body>
 </html>
