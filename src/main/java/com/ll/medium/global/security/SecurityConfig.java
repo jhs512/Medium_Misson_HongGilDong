@@ -34,9 +34,6 @@ public class SecurityConfig {
                         formLogin ->
                                 formLogin
                                         .loginPage("/member/login")
-                                        .loginProcessingUrl("/member/login")
-                                        .usernameParameter("username")
-                                        .passwordParameter("password")
                                         .defaultSuccessUrl("/?msg=" + URLEncoder.encode("환영합니다.", StandardCharsets.UTF_8))
                 );
 
