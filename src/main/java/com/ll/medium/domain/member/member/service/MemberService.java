@@ -28,7 +28,10 @@ public class MemberService {
             return RsData.of("400-2", "이미 존재하는 회원입니다.");
         }
 
-        Member member = new Member(username, passwordEncoder.encode(password));
+        Member member = Member.builder()
+                .username(username)
+                .password(passwordEncoder.encode(password))
+                .build();
         memberRepository.save(member);
 
         return RsData.of("200", "%s님 환영합니다. 회원가입이 완료되었습니다. 로그인 후 이용해주세요.".formatted(member.getUsername()), member);
