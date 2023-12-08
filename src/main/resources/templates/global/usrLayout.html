@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <title>미디엄</title>
+
+    <link rel="stylesheet" href="/resource/global/global.css">
+    <script src="/resource/global/global.js"></script>
+
+    <script>
+        const urlParams = getUrlParams(location.href);
+
+        if (urlParams.msg) {
+            alert(urlParams.msg);
+        }
+    </script>
 </head>
 <body>
 
