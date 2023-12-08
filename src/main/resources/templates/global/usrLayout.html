@@ -23,6 +23,15 @@
 <th:block layout:fragment="content"></th:block>
 
 <script>
+    // history.back 에 의해서 돌아온 경우에 자바스크립트가 실행이 안될 수 도 잇다.
+    // $(window).bind("pageshow", function (event) {}); 를 사용하면 해결이 된다.
+    $(window).bind("pageshow", function (event) {
+        if (sessionStorage.getItem("historyBackFailMsg")) {
+            toastWarning(sessionStorage.getItem("historyBackFailMsg"));
+            sessionStorage.removeItem("historyBackFailMsg");
+        }
+    });
+
     if (urlParams.msg) {
         toastNotice(urlParams.msg);
     }
