@@ -1,0 +1,7 @@
+<script th:inline="javascript">
+    const failMsg = /*[[${failMsg}]]*/ null;
+
+    if (failMsg) alert(failMsg);
+
+    history.back();
+</script>

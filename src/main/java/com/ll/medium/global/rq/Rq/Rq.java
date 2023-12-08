@@ -31,4 +31,10 @@ public class Rq {
 
         return sb.toString();
     }
+
+    public String historyBack(String msg) {
+        request.setAttribute("failMsg", msg);
+
+        return "global/js";
+    }
 }

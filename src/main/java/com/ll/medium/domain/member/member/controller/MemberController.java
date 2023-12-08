@@ -39,7 +39,7 @@ public class MemberController {
         Member member = memberService.join(joinForm.getUsername(), joinForm.getPassword());
 
         if (member == null) {
-            return rq.redirect("/member/join", "이미 존재하는 회원입니다.");
+            return rq.historyBack("이미 존재하는 회원입니다.");
         }
 
         return rq.redirect(
