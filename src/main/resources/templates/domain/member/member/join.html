@@ -2,7 +2,7 @@
 <div layout:fragment="content">
     <h1>회원가입</h1>
 
-    <form th:action method="POST">
+    <form th:action method="POST" onsubmit="return false;">
         <div>
             <label>사용자 ID</label>
             <input type="text" name="username" required>
