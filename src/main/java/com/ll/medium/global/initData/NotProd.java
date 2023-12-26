@@ -1,4 +1,4 @@
-package com.ll.medium.global.init;
+package com.ll.medium.global.initData;
 
 import com.ll.medium.domain.member.member.entity.Member;
 import com.ll.medium.domain.member.member.service.MemberService;

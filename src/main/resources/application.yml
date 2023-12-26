@@ -8,6 +8,9 @@ spring:
     multipart:
       max-file-size: 50MB
       max-request-size: 50MB
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
   threads:
     virtual:
       enabled: true
