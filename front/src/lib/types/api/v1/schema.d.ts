@@ -17,6 +17,10 @@ export interface paths {
     /** 글 리스트 */
     get: operations["getItems"];
   };
+  "/api/v1/posts/{id}": {
+    /** 글 */
+    get: operations["getItem"];
+  };
   "/api/v1/posts/mine": {
     /** 내 글 리스트 */
     get: operations["getMine"];
@@ -88,6 +92,31 @@ export interface components {
       statusCode: number;
       msg: string;
       data: components["schemas"]["GetItemsResponseBody"];
+      fail: boolean;
+      success: boolean;
+    };
+    GetItemResponseBody: {
+      item: components["schemas"]["PostDto"];
+    };
+    PostDto: {
+      /** Format: int64 */
+      id: number;
+      /** Format: date-time */
+      createDate: string;
+      /** Format: date-time */
+      modifyDate: string;
+      /** Format: int64 */
+      authorId: number;
+      authorUsername: string;
+      title: string;
+      body: string;
+    };
+    RsDataGetItemResponseBody: {
+      resultCode: string;
+      /** Format: int32 */
+      statusCode: number;
+      msg: string;
+      data: components["schemas"]["GetItemResponseBody"];
       fail: boolean;
       success: boolean;
     };
@@ -175,6 +204,28 @@ export interface operations {
       200: {
         content: {
           "application/json": components["schemas"]["RsDataGetItemsResponseBody"];
+        };
+      };
+      /** @description Internal Server Error */
+      500: {
+        content: {
+          "*/*": components["schemas"]["RsDataEmpty"];
+        };
+      };
+    };
+  };
+  /** 글 */
+  getItem: {
+    parameters: {
+      path: {
+        id: number;
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "application/json": components["schemas"]["RsDataGetItemResponseBody"];
         };
       };
       /** @description Internal Server Error */
