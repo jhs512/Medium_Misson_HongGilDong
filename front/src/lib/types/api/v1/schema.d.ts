@@ -68,9 +68,9 @@ export interface components {
       success: boolean;
     };
     GetItemsResponseBody: {
-      items: components["schemas"]["PostDto"][];
+      items: components["schemas"]["PostListItemDto"][];
     };
-    PostDto: {
+    PostListItemDto: {
       /** Format: int64 */
       id: number;
       /** Format: date-time */
@@ -81,7 +81,6 @@ export interface components {
       authorId: number;
       authorUsername: string;
       title: string;
-      body: string;
     };
     RsDataGetItemsResponseBody: {
       resultCode: string;
@@ -93,7 +92,7 @@ export interface components {
       success: boolean;
     };
     GetMineResponseBody: {
-      items: components["schemas"]["PostDto"][];
+      items: components["schemas"]["PostListItemDto"][];
     };
     RsDataGetMineResponseBody: {
       resultCode: string;

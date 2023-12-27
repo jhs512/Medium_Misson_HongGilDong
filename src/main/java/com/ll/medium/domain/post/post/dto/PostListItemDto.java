@@ -6,7 +6,7 @@ import org.springframework.lang.NonNull;
 import java.time.LocalDateTime;
 
 @Value
-public class PostDto implements AbsPostDto {
+public class PostListItemDto implements AbsPostDto {
     @NonNull
     private final long id;
     @NonNull
@@ -19,6 +19,4 @@ public class PostDto implements AbsPostDto {
     private final String authorUsername;
     @NonNull
     private final String title;
-    @NonNull
-    private final String body;
 }
