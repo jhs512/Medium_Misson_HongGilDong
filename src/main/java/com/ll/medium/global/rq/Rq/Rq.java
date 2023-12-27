@@ -5,6 +5,7 @@ import com.ll.medium.global.app.AppConfig;
 import com.ll.medium.global.exceptions.GlobalException;
 import com.ll.medium.global.rsData.RsData.RsData;
 import com.ll.medium.global.security.SecurityUser;
+import com.ll.medium.standard.util.Ut.Ut;
 import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -136,11 +137,11 @@ public class Rq {
         return member;
     }
 
-    private boolean isLogout() {
+    public boolean isLogout() {
         return !isLogin();
     }
 
-    private boolean isLogin() {
+    public boolean isLogin() {
         return getUser() != null;
     }
 
@@ -228,5 +229,26 @@ public class Rq {
         if (rs.isFail()) return historyBack(rs.getMsg());
 
         return redirect(path, rs.getMsg());
+    }
+
+    public boolean isAdmin() {
+        if (isLogout()) return false;
+
+        return getUser()
+                .getAuthorities()
+                .stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+    }
+
+    public String getCurrentQueryStringWithoutParam(String paramName) {
+        String queryString = req.getQueryString();
+
+        if (queryString == null) {
+            return "";
+        }
+
+        queryString = Ut.url.deleteQueryParam(queryString, paramName);
+
+        return queryString;
     }
 }
