@@ -1,6 +1,7 @@
 package com.ll.medium.domain.member.member.controller;
 
 import com.ll.medium.domain.member.member.dto.MemberDto;
+import com.ll.medium.domain.member.member.entity.Member;
 import com.ll.medium.domain.member.member.service.MemberService;
 import com.ll.medium.global.rq.Rq.Rq;
 import com.ll.medium.global.rsData.RsData.RsData;
@@ -10,9 +11,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,16 +27,14 @@ public class ApiV1MemberController {
     private final MemberService memberService;
     private final Rq rq;
 
-    @Getter
-    @Setter
-    public static class LoginRequestBody {
-        @NotBlank
-        private String username;
-        @NotBlank
-        private String password;
+    public record LoginRequestBody(@NotBlank String username,
+                                   @NotBlank String password) {
     }
 
     public record LoginResponseBody(@NonNull MemberDto item) {
+        public LoginResponseBody(Member item) {
+            this(new MemberDto(item));
+        }
     }
 
     @PostMapping("/login")
@@ -45,23 +42,23 @@ public class ApiV1MemberController {
     public RsData<LoginResponseBody> login(
             @Valid @RequestBody LoginRequestBody body
     ) {
-        RsData<MemberService.AuthAndMakeTokensResponseBody> authAndMakeTokensRs = memberService.authAndMakeTokens(body.getUsername(), body.getPassword());
+        RsData<MemberService.AuthAndMakeTokensResponseBody> authAndMakeTokensRs = memberService.authAndMakeTokens(
+                body.username,
+                body.password
+        );
 
         rq.setCrossDomainCookie("refreshToken", authAndMakeTokensRs.getData().getRefreshToken());
         rq.setCrossDomainCookie("accessToken", authAndMakeTokensRs.getData().getAccessToken());
 
         return authAndMakeTokensRs.of(
-                new LoginResponseBody(
-                        new MemberDto(
-                                authAndMakeTokensRs.getData().getMember()
-                        )
-                )
+                new LoginResponseBody(authAndMakeTokensRs.getData().getMember())
         );
     }
 
-    @Getter
     public record MeResponseBody(@NonNull MemberDto item) {
-
+        public MeResponseBody(Member item) {
+            this(new MemberDto(item));
+        }
     }
 
     @GetMapping(value = "/me", consumes = ALL_VALUE)
@@ -70,11 +67,7 @@ public class ApiV1MemberController {
         return RsData.of(
                 "200",
                 "내 정보 가져오기 성공",
-                new MeResponseBody(
-                        new MemberDto(
-                                rq.getMember()
-                        )
-                )
+                new MeResponseBody(rq.getMember())
         );
     }
 
