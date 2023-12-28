@@ -26,6 +26,9 @@
 		{/if}
 		{#if rq.isLogin()}
 			<li>
+				<a href="/post/write" class="btn btn-link">글 작성</a>
+			</li>
+			<li>
 				<a href="/post/myList" class="btn btn-link">내글</a>
 			</li>
 			<li>
