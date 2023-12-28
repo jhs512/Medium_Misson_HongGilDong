@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { filterObjectKeys, getUrlParams } from '$lib/utils/common';
+	import { filterObjectKeys, getUrlParams, stripIndent } from '$lib/utils/common';
 
 	import '@toast-ui/editor/dist/toastui-editor.css';
 	// @ts-ignore
@@ -203,8 +203,23 @@
 			el: div,
 			height: 'calc(100dvh - 48px)',
 			initialEditType: 'markdown',
-			previewStyle: 'vertical',
+			previewStyle: 'tab',
 			language: 'ko-KR',
+			useCommandShortcut: false,
+			initialValue: stripIndent(`
+			$$config
+			title: 제목
+			open: true
+			tags: #TAG1 #TAG2
+			$$
+			`).trim(),
+			placeholder: stripIndent(`
+			$$config
+			title: 제목
+			open: true
+			tags: #TAG1 #TAG2
+			$$
+			`).trim(),
 			plugins: [
 				codeSyntaxHighlight,
 				[chart, chartOptions],
@@ -217,6 +232,15 @@
 				codepenPlugin
 			],
 			customHTMLRenderer: {
+				heading(node: any, { entering, getChildrenText }: any) {
+					return {
+						type: entering ? 'openTag' : 'closeTag',
+						tagName: `h${node.level}`,
+						attributes: {
+							id: getChildrenText(node).trim()
+						}
+					};
+				},
 				htmlBlock: {
 					iframe(node: any) {
 						const newAttrs = filterObjectKeys(node.attrs, [
