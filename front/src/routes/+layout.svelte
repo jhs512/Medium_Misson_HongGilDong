@@ -1,8 +1,9 @@
 <script lang="ts">
 	import rq from '$lib/rq/rq.svelte';
 	import '$lib/app.css';
-	const { children } = $props();
 	import { untrack } from 'svelte';
+
+	const { children } = $props();
 
 	rq.effect(async () => {
 		untrack(() => {
