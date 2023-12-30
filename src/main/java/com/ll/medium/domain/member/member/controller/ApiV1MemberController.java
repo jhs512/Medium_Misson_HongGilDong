@@ -27,8 +27,10 @@ public class ApiV1MemberController {
     private final MemberService memberService;
     private final Rq rq;
 
-    public record LoginRequestBody(@NotBlank String username,
-                                   @NotBlank String password) {
+    public record LoginRequestBody(
+            @NotBlank String username,
+            @NotBlank String password
+    ) {
     }
 
     public record LoginResponseBody(@NonNull MemberDto item) {

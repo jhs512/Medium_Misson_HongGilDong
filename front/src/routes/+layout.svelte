@@ -27,7 +27,7 @@
 		{/if}
 		{#if rq.isLogin()}
 			<li>
-				<a href="/post/write" class="btn btn-link">글 작성</a>
+				<button on:click={() => rq.goToTempPostEditPage()} class="btn btn-link">글 작성</button>
 			</li>
 			<li>
 				<a href="/post/myList" class="btn btn-link">내글</a>

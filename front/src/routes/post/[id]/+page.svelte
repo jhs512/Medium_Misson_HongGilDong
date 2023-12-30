@@ -1,15 +1,13 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-
-	const post = $page.data.post;
+	const { data } = $props();
 </script>
 
 <svelte:head>
-	<title>글 {post.title}</title>
+	<title>글 {data.post.title}</title>
 </svelte:head>
 
 <div>
-	<h1>{post.title}</h1>
+	<h1>{data.post.title}</h1>
 
-	<p>{post.body}</p>
+	<p>{data.post.body}</p>
 </div>

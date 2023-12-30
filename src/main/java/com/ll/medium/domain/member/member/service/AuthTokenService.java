@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -64,8 +65,8 @@ public class AuthTokenService {
 
     public String genRefreshToken() {
         SecureRandom random = new SecureRandom();
-        byte bytes[] = new byte[10];
+        byte[] bytes = new byte[10];
         random.nextBytes(bytes);
-        return bytes.toString();
+        return Base64.getUrlEncoder().encodeToString(bytes);
     }
 }

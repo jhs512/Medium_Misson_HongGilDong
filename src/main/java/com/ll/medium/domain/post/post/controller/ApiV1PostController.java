@@ -12,10 +12,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -83,6 +80,19 @@ public class ApiV1PostController {
                 "200",
                 "성공",
                 new GetItemResponseBody(post.get())
+        );
+    }
+
+    public record MakeTempResponseBody(@NonNull PostDto item) {
+    }
+
+    @PostMapping(value = "/temp", consumes = ALL_VALUE)
+    @Operation(summary = "임시 글 생성")
+    public RsData<MakeTempResponseBody> makeTemp() {
+        RsData<PostDto> postRsData = postService.findTempOrMake(rq.getMember(), PostDto.class);
+
+        return postRsData.of(
+                new MakeTempResponseBody(postRsData.getData())
         );
     }
 }

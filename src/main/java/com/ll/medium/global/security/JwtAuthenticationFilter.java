@@ -35,11 +35,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String bearerToken = request.getHeader("Authorization");
 
         if (bearerToken != null) {
-            String refreshToken = bearerToken.substring("Bearer ".length());
-            RsData<String> rs = memberService.refreshAccessToken(refreshToken);
-            String accessToken = rs.getData();
-            SecurityUser securityUser = memberService.getUserFromAccessToken(accessToken);
-            rq.setLogin(securityUser);
+            String tokensStr = bearerToken.substring("Bearer ".length());
+            String[] tokens = tokensStr.split("#", 2);
+            String refreshToken = tokens[0];
+            String accessToken = tokens.length == 2 ? tokens[1] : "";
+
+            if (!accessToken.isBlank()) {
+                if (!memberService.validateToken(accessToken)) {
+                    RsData<String> rs = memberService.refreshAccessToken(refreshToken);
+                    accessToken = rs.getData();
+                    rq.setHeader("Authorization", "Bearer " + refreshToken + "#" + accessToken);
+                }
+
+                SecurityUser securityUser = memberService.getUserFromAccessToken(accessToken);
+                rq.setLogin(securityUser);
+            }
         } else {
             String accessToken = rq.getCookieValue("accessToken", "");
 

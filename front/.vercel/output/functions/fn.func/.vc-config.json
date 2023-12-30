@@ -1,0 +1,6 @@
+{
+	"runtime": "nodejs20.x",
+	"handler": "..\\..\\..\\..\\..\\..\\Users\\jhs512\\IdeaProjects\\Medium_Misson_HongGilDong_ddd\\front\\.svelte-kit\\vercel-tmp\\index.js",
+	"launcherType": "Nodejs",
+	"experimentalResponseStreaming": true
+}

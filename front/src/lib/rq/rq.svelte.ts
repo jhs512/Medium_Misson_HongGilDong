@@ -7,6 +7,9 @@ import toastr from 'toastr';
 import 'toastr/build/toastr.css';
 
 class Rq {
+	private serverSideFetch: any = null;
+	private apiEndPointsWithFetchCached: ReturnType<typeof createClient> | null = null;
+	private apiEndPointsCached: ReturnType<typeof createClient> | null = null;
 	public member: components['schemas']['MemberDto'];
 	private shouldLogoutPagePaths = ['/member/login', '/member/join'];
 	private shouldLoginPagePaths = ['/post/myList'];
@@ -52,11 +55,28 @@ class Rq {
 		};
 	}
 
+	public apiEndPointsWithFetch(fetch: any) {
+		if (this.serverSideFetch != fetch || this.apiEndPointsWithFetchCached == null) {
+			this.serverSideFetch = fetch;
+			this.apiEndPointsWithFetchCached = createClient<paths>({
+				baseUrl: import.meta.env.VITE_CORE_API_BASE_URL,
+				credentials: 'include',
+				fetch: this.serverSideFetch
+			});
+		}
+
+		return this.apiEndPointsWithFetchCached;
+	}
+
 	public apiEndPoints() {
-		return createClient<paths>({
-			baseUrl: import.meta.env.VITE_CORE_API_BASE_URL,
-			credentials: 'include'
-		});
+		if (this.apiEndPointsCached == null) {
+			this.apiEndPointsCached = createClient<paths>({
+				baseUrl: import.meta.env.VITE_CORE_API_BASE_URL,
+				credentials: 'include'
+			});
+		}
+
+		return this.apiEndPointsCached;
 	}
 
 	public msgInfo(message: string) {
@@ -67,7 +87,7 @@ class Rq {
 		toastr.error(message);
 	}
 
-	public goto(url: string) {
+	public goTo(url: string) {
 		goto(url);
 	}
 
@@ -142,11 +162,19 @@ class Rq {
 	}
 
 	public goToMain() {
-		this.goto('/');
+		this.goTo('/');
+	}
+
+	public async goToTempPostEditPage() {
+		const { data } = await this.apiEndPoints().POST('/api/v1/posts/temp');
+
+		if (data) {
+			this.goTo(`/post/${data.data.item.id}/edit`);
+		}
 	}
 
 	public goToLoginPage() {
-		this.goto('/member/login');
+		this.goTo('/member/login');
 	}
 
 	public effect(fn: () => void) {
