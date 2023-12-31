@@ -22,4 +22,7 @@ public interface AbsPostDto {
 
     @NonNull
     String getTitle();
+
+    @NonNull
+    boolean isPublished();
 }

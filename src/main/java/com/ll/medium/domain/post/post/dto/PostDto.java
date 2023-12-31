@@ -1,24 +1,10 @@
 package com.ll.medium.domain.post.post.dto;
 
-import lombok.Value;
+import com.ll.medium.standard.base.HasConcreteDto;
 import org.springframework.lang.NonNull;
 
-import java.time.LocalDateTime;
-
-@Value
-public class PostDto implements AbsPostDto {
+public interface PostDto extends AbsPostDto, HasConcreteDto {
     @NonNull
-    private final long id;
-    @NonNull
-    private final LocalDateTime createDate;
-    @NonNull
-    private final LocalDateTime modifyDate;
-    @NonNull
-    private final long authorId;
-    @NonNull
-    private final String authorUsername;
-    @NonNull
-    private final String title;
-    @NonNull
-    private final String body;
+    String getBody();
 }
+

@@ -20,9 +20,10 @@ toastr.options = {
 function parseMsg(msg) {
     const [pureMsg, ttl] = msg.split(";ttl=");
 
-    if ( ttl === undefined ) {
+    if (ttl === undefined) {
         return [pureMsg, true];
-    };
+    }
+    ;
 
     const currentJsUnixTimestamp = new Date().getTime();
 

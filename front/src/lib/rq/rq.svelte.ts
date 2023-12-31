@@ -7,157 +7,177 @@ import toastr from 'toastr';
 import 'toastr/build/toastr.css';
 
 class Rq {
-	public member: components['schemas']['MemberDto'];
-	private shouldLogoutPagePaths = ['/member/login', '/member/join'];
-	private shouldLoginPagePaths = ['/post/myList'];
+  public member: components['schemas']['MemberDto'];
+  private shouldLogoutPagePaths = ['/member/login', '/member/join'];
+  private shouldLoginPagePaths = ['/post/myList'];
 
-	constructor() {
-		let id = $state(0);
-		let username = $state('');
-		let createDate = $state('');
-		let modifyDate = $state('');
-		let authorities: string[] = $state([]);
+  constructor() {
+    let id = $state(0);
+    let username = $state('');
+    let createDate = $state('');
+    let modifyDate = $state('');
+    let authorities: string[] = $state([]);
 
-		this.member = {
-			get id() {
-				return id;
-			},
-			set id(value: number) {
-				id = value;
-			},
-			get createDate() {
-				return createDate;
-			},
-			set createDate(value: string) {
-				createDate = value;
-			},
-			get modifyDate() {
-				return modifyDate;
-			},
-			set modifyDate(value: string) {
-				modifyDate = value;
-			},
-			get username() {
-				return username;
-			},
-			set username(value: string) {
-				username = value;
-			},
-			get authorities() {
-				return authorities;
-			},
-			set authorities(value: string[]) {
-				authorities = value;
-			}
-		};
-	}
+    this.member = {
+      get id() {
+        return id;
+      },
+      set id(value: number) {
+        id = value;
+      },
+      get createDate() {
+        return createDate;
+      },
+      set createDate(value: string) {
+        createDate = value;
+      },
+      get modifyDate() {
+        return modifyDate;
+      },
+      set modifyDate(value: string) {
+        modifyDate = value;
+      },
+      get username() {
+        return username;
+      },
+      set username(value: string) {
+        username = value;
+      },
+      get authorities() {
+        return authorities;
+      },
+      set authorities(value: string[]) {
+        authorities = value;
+      }
+    };
+  }
 
-	public apiEndPoints() {
-		return createClient<paths>({
-			baseUrl: import.meta.env.VITE_CORE_API_BASE_URL,
-			credentials: 'include'
-		});
-	}
+  public apiEndPointsWithFetch(fetch: any) {
+    return createClient<paths>({
+      baseUrl: import.meta.env.VITE_CORE_API_BASE_URL,
+      credentials: 'include',
+      fetch
+    });
+  }
 
-	public msgInfo(message: string) {
-		toastr.info(message);
-	}
+  public apiEndPoints() {
+    return createClient<paths>({
+      baseUrl: import.meta.env.VITE_CORE_API_BASE_URL,
+      credentials: 'include'
+    });
+  }
 
-	public msgError(message: string) {
-		toastr.error(message);
-	}
+  public msgInfo(message: string) {
+    toastr.info(message);
+  }
 
-	public goto(path: string) {
-		goto(path);
-	}
+  public msgError(message: string) {
+    toastr.error(message);
+  }
 
-	public setLogined(member: components['schemas']['MemberDto']) {
-		this.member.id = member.id;
-		this.member.createDate = member.createDate;
-		this.member.modifyDate = member.modifyDate;
-		this.member.username = member.username;
-		this.member.authorities = member.authorities;
-	}
+  public goTo(url: string) {
+    goto(url);
+  }
 
-	public setLogout() {
-		this.member.id = 0;
-		this.member.createDate = '';
-		this.member.modifyDate = '';
-		this.member.username = '';
-		this.member.authorities = [];
-	}
+  public replace(url: string) {
+    goto(url, { replaceState: true });
+  }
 
-	public isLogin() {
-		return this.member.id !== 0;
-	}
+  public setLogined(member: components['schemas']['MemberDto']) {
+    this.member.id = member.id;
+    this.member.createDate = member.createDate;
+    this.member.modifyDate = member.modifyDate;
+    this.member.username = member.username;
+    this.member.authorities = member.authorities;
+  }
 
-	public isLogout() {
-		return !this.isLogin();
-	}
+  public setLogout() {
+    this.member.id = 0;
+    this.member.createDate = '';
+    this.member.modifyDate = '';
+    this.member.username = '';
+    this.member.authorities = [];
+  }
 
-	public async initAuth() {
-		const { data } = await this.apiEndPoints().GET('/api/v1/members/me');
+  public isLogin() {
+    return this.member.id !== 0;
+  }
 
-		if (data) {
-			this.setLogined(data.data.item);
-		}
+  public isLogout() {
+    return !this.isLogin();
+  }
 
-		this.checkAuth();
-	}
+  public async initAuth() {
+    const { data } = await this.apiEndPoints().GET('/api/v1/members/me');
 
-	public async logout() {
-		const {} = await this.apiEndPoints().POST('/api/v1/members/logout');
+    if (data) {
+      this.setLogined(data.data.item);
+    }
 
-		this.setLogout();
+    this.checkAuth();
+  }
 
-		this.goToMain();
-	}
+  public async logout() {
+    const {} = await this.apiEndPoints().POST('/api/v1/members/logout');
 
-	public shouldLogoutPage() {
-		return this.shouldLogoutPagePaths.includes(window.location.pathname);
-	}
+    this.setLogout();
 
-	public shouldLoginPage() {
-		return this.shouldLoginPagePaths.includes(window.location.pathname);
-	}
+    this.goToMain();
+  }
 
-	public checkAuth() {
-		if (this.isLogin()) {
-			const needToGoMainPage = this.shouldLogoutPage();
+  public shouldLogoutPage() {
+    return this.shouldLogoutPagePaths.includes(window.location.pathname);
+  }
 
-			if (needToGoMainPage) {
-				this.goToMain();
-			}
-		} else {
-			const needToGoLoginPage = this.shouldLoginPage();
+  public shouldLoginPage() {
+    return this.shouldLoginPagePaths.includes(window.location.pathname);
+  }
 
-			if (needToGoLoginPage) {
-				this.goToLoginPage();
-			}
-		}
-	}
+  public checkAuth() {
+    if (this.isLogin()) {
+      const needToGoMainPage = this.shouldLogoutPage();
 
-	public goToMain() {
-		this.goto('/');
-	}
+      if (needToGoMainPage) {
+        this.goToMain();
+      }
+    } else {
+      const needToGoLoginPage = this.shouldLoginPage();
 
-	public goToLoginPage() {
-		this.goto('/member/login');
-	}
+      if (needToGoLoginPage) {
+        this.goToLoginPage();
+      }
+    }
+  }
 
-	public effect(fn: () => void) {
-		$effect(() => {
-			fn();
-		});
-	}
+  public goToMain() {
+    this.goTo('/');
+  }
 
-	public getKakaoLoginUrl() {
-		return `${
-			import.meta.env.VITE_CORE_API_BASE_URL
-		}/member/socialLogin/kakao?redirectUrl=${encodeURIComponent(
-			import.meta.env.VITE_CORE_FRONT_BASE_URL
-		)}`;
-	}
+  public async goToTempPostEditPage() {
+    const { data } = await this.apiEndPoints().POST('/api/v1/posts/temp');
+
+    if (data) {
+      this.goTo(`/post/${data.data.item.id}/edit`);
+    }
+  }
+
+  public goToLoginPage() {
+    this.goTo('/member/login');
+  }
+
+  public effect(fn: () => void) {
+    $effect(() => {
+      fn();
+    });
+  }
+
+  public getKakaoLoginUrl() {
+    return `${
+      import.meta.env.VITE_CORE_API_BASE_URL
+    }/member/socialLogin/kakao?redirectUrl=${encodeURIComponent(
+      import.meta.env.VITE_CORE_FRONT_BASE_URL
+    )}/member/socialLoginCallback?provierTypeCode=kakao`;
+  }
 }
 
 const rq = new Rq();

@@ -2,7 +2,8 @@ package com.ll.medium.domain.post.post.entity;
 
 import com.ll.medium.domain.member.member.entity.Member;
 import com.ll.medium.global.jpa.BaseTime.BaseTime;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
 import lombok.*;
 
 @Entity

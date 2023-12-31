@@ -1,5 +1,6 @@
 package com.ll.medium.global.rsData.RsData;
 
+import com.ll.medium.standard.base.Empty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,14 +21,20 @@ public class RsData<T> {
     @NonNull
     T data;
 
+    public <T> RsData<T> of(T data) {
+        return of(this.resultCode, this.msg, data);
+    }
+
     public static <T> RsData<T> of(String resultCode, String msg) {
-        return of(resultCode, msg, null);
+        return of(resultCode, msg, (T) new Empty());
     }
 
     public static <T> RsData<T> of(String resultCode, String msg, T data) {
         int statusCode = Integer.parseInt(resultCode.split("-", 2)[0]);
 
-        return new RsData<>(resultCode, statusCode, msg, data);
+        RsData<T> tRsData = new RsData<>(resultCode, statusCode, msg, data);
+
+        return tRsData;
     }
 
     @NonNull
