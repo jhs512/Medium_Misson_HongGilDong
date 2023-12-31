@@ -251,4 +251,8 @@ public class Rq {
 
         return queryString;
     }
+
+    public void setHeader(String name, String value) {
+        resp.setHeader(name, value);
+    }
 }

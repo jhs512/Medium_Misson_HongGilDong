@@ -1,283 +1,279 @@
 <script lang="ts">
-	import rq from '$lib/rq/rq.svelte';
-	import { filterObjectKeys, getUrlParams, stripIndent } from '$lib/utils/common';
+  import rq from '$lib/rq/rq.svelte';
+  import { filterObjectKeys, getUrlParams, stripIndent } from '$lib/utils/common';
 
-	// 추가적인 CSS 임포트
-	import '@toast-ui/editor/dist/toastui-editor.css';
-	import 'prismjs/themes/prism.css';
-	import '@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight.css';
-	import '@toast-ui/chart/dist/toastui-chart.css';
-	import 'tui-color-picker/dist/tui-color-picker.css';
-	import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
-	import '@toast-ui/editor-plugin-table-merged-cell/dist/toastui-editor-plugin-table-merged-cell.css';
+  // 추가적인 CSS 임포트
+  import '@toast-ui/editor/dist/toastui-editor.css';
+  import 'prismjs/themes/prism.css';
+  import '@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight.css';
+  import '@toast-ui/chart/dist/toastui-chart.css';
+  import 'tui-color-picker/dist/tui-color-picker.css';
+  import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
+  import '@toast-ui/editor-plugin-table-merged-cell/dist/toastui-editor-plugin-table-merged-cell.css';
 
-	let div: HTMLDivElement;
+  const { body } = $props<{ body: string }>();
 
-	rq.effect(async () => {
-		const [
-			{ default: Editor },
-			{ default: codeSyntaxHighlight },
-			{ default: chart },
-			{ default: colorSyntax },
-			{ default: tableMergedCell },
-			{ default: uml },
-			{}
-		] = await Promise.all([
-			// @ts-ignore
-			import('@toast-ui/editor'),
-			import(
-				// @ts-ignore
-				'@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all'
-			),
-			import('@toast-ui/editor-plugin-chart'),
-			import('@toast-ui/editor-plugin-color-syntax'),
-			import('@toast-ui/editor-plugin-table-merged-cell'),
-			import('@toast-ui/editor-plugin-uml'),
-			// @ts-ignore
-			import('@toast-ui/editor/dist/i18n/ko-kr')
-		]);
+  let div: HTMLDivElement | undefined = $state();
 
-		const chartOptions = {
-			minWidth: 100,
-			maxWidth: 600,
-			minHeight: 100,
-			maxHeight: 300
-		};
+  rq.effect(async () => {
+    const [
+      { default: Editor },
+      { default: codeSyntaxHighlight },
+      { default: chart },
+      { default: colorSyntax },
+      { default: tableMergedCell },
+      { default: uml },
+      {}
+    ] = await Promise.all([
+      // @ts-ignore
+      import('@toast-ui/editor'),
+      import(
+        // @ts-ignore
+        '@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all'
+      ),
+      import('@toast-ui/editor-plugin-chart'),
+      import('@toast-ui/editor-plugin-color-syntax'),
+      import('@toast-ui/editor-plugin-table-merged-cell'),
+      import('@toast-ui/editor-plugin-uml'),
+      // @ts-ignore
+      import('@toast-ui/editor/dist/i18n/ko-kr')
+    ]);
 
-		const umlOptions = {
-			rendererURL: 'http://www.plantuml.com/plantuml/svg/'
-		};
+    const chartOptions = {
+      minWidth: 100,
+      maxWidth: 600,
+      minHeight: 100,
+      maxHeight: 300
+    };
 
-		function configPlugin() {
-			const toHTMLRenderers = {
-				config(node: any) {
-					return [
-						{ type: 'openTag', tagName: 'div', outerNewLine: true },
-						{ type: 'html', content: '' },
-						{ type: 'closeTag', tagName: 'div', outerNewLine: true }
-					];
-				}
-			};
+    const umlOptions = {
+      rendererURL: 'http://www.plantuml.com/plantuml/svg/'
+    };
 
-			return { toHTMLRenderers };
-		}
+    function configPlugin() {
+      const toHTMLRenderers = {
+        config(node: any) {
+          return [
+            { type: 'openTag', tagName: 'div', outerNewLine: true },
+            { type: 'html', content: '' },
+            { type: 'closeTag', tagName: 'div', outerNewLine: true }
+          ];
+        }
+      };
 
-		function hidePlugin() {
-			const toHTMLRenderers = {
-				hide(node: any) {
-					return [
-						{ type: 'openTag', tagName: 'div', outerNewLine: true },
-						{ type: 'html', content: '' },
-						{ type: 'closeTag', tagName: 'div', outerNewLine: true }
-					];
-				}
-			};
+      return { toHTMLRenderers };
+    }
 
-			return { toHTMLRenderers };
-		}
+    function hidePlugin() {
+      const toHTMLRenderers = {
+        hide(node: any) {
+          return [
+            { type: 'openTag', tagName: 'div', outerNewLine: true },
+            { type: 'html', content: '' },
+            { type: 'closeTag', tagName: 'div', outerNewLine: true }
+          ];
+        }
+      };
 
-		function youtubePlugin() {
-			const toHTMLRenderers = {
-				youtube(node: any) {
-					const html = renderYoutube(node.literal);
+      return { toHTMLRenderers };
+    }
 
-					return [
-						{ type: 'openTag', tagName: 'div', outerNewLine: true },
-						{ type: 'html', content: html },
-						{ type: 'closeTag', tagName: 'div', outerNewLine: true }
-					];
-				}
-			};
+    function youtubePlugin() {
+      const toHTMLRenderers = {
+        youtube(node: any) {
+          const html = renderYoutube(node.literal);
 
-			function renderYoutube(url: string) {
-				url = url.replace('https://www.youtube.com/watch?v=', '');
-				url = url.replace('http://www.youtube.com/watch?v=', '');
-				url = url.replace('www.youtube.com/watch?v=', '');
-				url = url.replace('youtube.com/watch?v=', '');
-				url = url.replace('https://youtu.be/', '');
-				url = url.replace('http://youtu.be/', '');
-				url = url.replace('youtu.be/', '');
+          return [
+            { type: 'openTag', tagName: 'div', outerNewLine: true },
+            { type: 'html', content: html },
+            { type: 'closeTag', tagName: 'div', outerNewLine: true }
+          ];
+        }
+      };
 
-				let urlParams = getUrlParams(url);
+      function renderYoutube(url: string) {
+        url = url.replace('https://www.youtube.com/watch?v=', '');
+        url = url.replace('http://www.youtube.com/watch?v=', '');
+        url = url.replace('www.youtube.com/watch?v=', '');
+        url = url.replace('youtube.com/watch?v=', '');
+        url = url.replace('https://youtu.be/', '');
+        url = url.replace('http://youtu.be/', '');
+        url = url.replace('youtu.be/', '');
 
-				let width = '100%';
-				let height = '100%';
+        let urlParams = getUrlParams(url);
 
-				let maxWidth = '500';
+        let width = '100%';
+        let height = '100%';
 
-				if (urlParams['max-width']) {
-					maxWidth = urlParams['max-width'];
-				}
+        let maxWidth = '500';
 
-				let ratio = 'aspect-[16/9]';
+        if (urlParams['max-width']) {
+          maxWidth = urlParams['max-width'];
+        }
 
-				let marginLeft = 'auto';
+        let ratio = 'aspect-[16/9]';
 
-				if (urlParams['margin-left']) {
-					marginLeft = urlParams['margin-left'];
-				}
+        let marginLeft = 'auto';
 
-				let marginRight = 'auto';
+        if (urlParams['margin-left']) {
+          marginLeft = urlParams['margin-left'];
+        }
 
-				if (urlParams['margin-right']) {
-					marginRight = urlParams['margin-right'];
-				}
+        let marginRight = 'auto';
 
-				let youtubeId = url;
+        if (urlParams['margin-right']) {
+          marginRight = urlParams['margin-right'];
+        }
 
-				if (youtubeId.indexOf('?') !== -1) {
-					let pos = url.indexOf('?');
-					youtubeId = youtubeId.substring(0, pos);
-				}
+        let youtubeId = url;
 
-				return (
-					'<div style="max-width:' +
-					maxWidth +
-					'px; margin-left:' +
-					marginLeft +
-					'; margin-right:' +
-					marginRight +
-					';" class="' +
-					ratio +
-					' relative"><iframe class="absolute top-0 left-0 w-full" width="' +
-					width +
-					'" height="' +
-					height +
-					'" src="https://www.youtube.com/embed/' +
-					youtubeId +
-					'" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>'
-				);
-			}
+        if (youtubeId.indexOf('?') !== -1) {
+          let pos = url.indexOf('?');
+          youtubeId = youtubeId.substring(0, pos);
+        }
 
-			return { toHTMLRenderers };
-		}
+        return (
+          '<div style="max-width:' +
+          maxWidth +
+          'px; margin-left:' +
+          marginLeft +
+          '; margin-right:' +
+          marginRight +
+          ';" class="' +
+          ratio +
+          ' relative"><iframe class="absolute top-0 left-0 w-full" width="' +
+          width +
+          '" height="' +
+          height +
+          '" src="https://www.youtube.com/embed/' +
+          youtubeId +
+          '" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>'
+        );
+      }
 
-		function codepenPlugin() {
-			const toHTMLRenderers = {
-				codepen(node: any) {
-					const html = renderCodepen(node.literal);
+      return { toHTMLRenderers };
+    }
 
-					return [
-						{ type: 'openTag', tagName: 'div', outerNewLine: true },
-						{ type: 'html', content: html },
-						{ type: 'closeTag', tagName: 'div', outerNewLine: true }
-					];
-				}
-			};
+    function codepenPlugin() {
+      const toHTMLRenderers = {
+        codepen(node: any) {
+          const html = renderCodepen(node.literal);
 
-			function renderCodepen(url: string) {
-				const urlParams = getUrlParams(url);
+          return [
+            { type: 'openTag', tagName: 'div', outerNewLine: true },
+            { type: 'html', content: html },
+            { type: 'closeTag', tagName: 'div', outerNewLine: true }
+          ];
+        }
+      };
 
-				let height = '400';
+      function renderCodepen(url: string) {
+        const urlParams = getUrlParams(url);
 
-				if (urlParams.height) {
-					height = urlParams.height;
-				}
+        let height = '400';
 
-				let width = '100%';
+        if (urlParams.height) {
+          height = urlParams.height;
+        }
 
-				if (urlParams.width) {
-					width = urlParams.width;
-				}
+        let width = '100%';
 
-				if (!width.includes('px') && !width.includes('%')) {
-					width += 'px';
-				}
+        if (urlParams.width) {
+          width = urlParams.width;
+        }
 
-				let iframeUri = url;
+        if (!width.includes('px') && !width.includes('%')) {
+          width += 'px';
+        }
 
-				if (iframeUri.indexOf('#') !== -1) {
-					let pos = iframeUri.indexOf('#');
-					iframeUri = iframeUri.substring(0, pos);
-				}
+        let iframeUri = url;
 
-				return (
-					'<iframe height="' +
-					height +
-					'" style="width: ' +
-					width +
-					';" title="" src="' +
-					iframeUri +
-					'" allowtransparency="true" allowfullscreen="true"></iframe>'
-				);
-			}
+        if (iframeUri.indexOf('#') !== -1) {
+          let pos = iframeUri.indexOf('#');
+          iframeUri = iframeUri.substring(0, pos);
+        }
 
-			return { toHTMLRenderers };
-		}
+        return (
+          '<iframe height="' +
+          height +
+          '" style="width: ' +
+          width +
+          ';" title="" src="' +
+          iframeUri +
+          '" allowtransparency="true" allowfullscreen="true"></iframe>'
+        );
+      }
 
-		const editor = new Editor({
-			el: div,
-			height: 'calc(100dvh - 48px)',
-			initialEditType: 'markdown',
-			previewStyle: 'tab',
-			useCommandShortcut: false,
-			language: 'ko-KR',
-			initialValue: stripIndent(`
+      return { toHTMLRenderers };
+    }
+
+    const editor = new Editor({
+      el: div,
+      height: 'calc(100dvh - 48px)',
+      initialEditType: 'markdown',
+      previewStyle: 'tab',
+      useCommandShortcut: false,
+      language: 'ko-KR',
+      initialValue: body,
+      placeholder: stripIndent(`
 			$$config
 			title: 제목
 			open: true
 			tags: #TAG1 #TAG2
 			$$
 			`).trim(),
-			placeholder: stripIndent(`
-			$$config
-			title: 제목
-			open: true
-			tags: #TAG1 #TAG2
-			$$
-			`).trim(),
-			plugins: [
-				codeSyntaxHighlight,
-				[chart, chartOptions],
-				colorSyntax,
-				tableMergedCell,
-				[uml, umlOptions],
-				configPlugin,
-				hidePlugin,
-				youtubePlugin,
-				codepenPlugin
-			],
-			customHTMLRenderer: {
-				heading(node: any, { entering, getChildrenText }: any) {
-					return {
-						type: entering ? 'openTag' : 'closeTag',
-						tagName: `h${node.level}`,
-						attributes: {
-							id: getChildrenText(node).trim()
-						}
-					};
-				},
-				htmlBlock: {
-					iframe(node: any) {
-						const newAttrs = filterObjectKeys(node.attrs, [
-							'src',
-							'width',
-							'height',
-							'allow',
-							'allowfullscreen',
-							'frameborder',
-							'scrolling'
-						]);
+      plugins: [
+        codeSyntaxHighlight,
+        [chart, chartOptions],
+        colorSyntax,
+        tableMergedCell,
+        [uml, umlOptions],
+        configPlugin,
+        hidePlugin,
+        youtubePlugin,
+        codepenPlugin
+      ],
+      customHTMLRenderer: {
+        heading(node: any, { entering, getChildrenText }: any) {
+          return {
+            type: entering ? 'openTag' : 'closeTag',
+            tagName: `h${node.level}`,
+            attributes: {
+              id: getChildrenText(node).trim()
+            }
+          };
+        },
+        htmlBlock: {
+          iframe(node: any) {
+            const newAttrs = filterObjectKeys(node.attrs, [
+              'src',
+              'width',
+              'height',
+              'allow',
+              'allowfullscreen',
+              'frameborder',
+              'scrolling'
+            ]);
 
-						return [
-							{
-								type: 'openTag',
-								tagName: 'iframe',
-								outerNewLine: true,
-								attributes: newAttrs
-							},
-							{ type: 'html', content: node.childrenHTML },
-							{ type: 'closeTag', tagName: 'iframe', outerNewLine: false }
-						];
-					}
-				}
-			}
-		});
+            return [
+              {
+                type: 'openTag',
+                tagName: 'iframe',
+                outerNewLine: true,
+                attributes: newAttrs
+              },
+              { type: 'html', content: node.childrenHTML },
+              { type: 'closeTag', tagName: 'iframe', outerNewLine: false }
+            ];
+          }
+        }
+      }
+    });
 
-		return () => {
-			editor.destroy();
-		};
-	});
+    return () => {
+      editor.destroy();
+    };
+  });
 </script>
 
 <div bind:this={div}></div>
