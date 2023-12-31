@@ -1,5 +1,6 @@
 package com.ll.medium.standard.util.Ut;
 
+import com.ll.medium.global.app.AppConfig;
 import lombok.SneakyThrows;
 
 public class Ut {
@@ -64,6 +65,13 @@ public class Ut {
             String urlAfter = url.substring(startPoint + endPoint + 1);
 
             return url.substring(0, startPoint) + urlAfter;
+        }
+    }
+
+    public static class json {
+        @SneakyThrows
+        public static String toString(Object obj) {
+            return AppConfig.getObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(obj);
         }
     }
 }

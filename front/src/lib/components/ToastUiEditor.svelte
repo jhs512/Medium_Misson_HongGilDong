@@ -14,6 +14,16 @@
   const { body } = $props<{ body: string }>();
 
   let div: HTMLDivElement | undefined = $state();
+  let editor: any;
+
+  function switchTab() {
+    div!
+      .querySelectorAll('.toastui-editor-tabs > .tab-item:not(.active)')
+      .forEach((element: Element): void => {
+        // 각 요소에 대해 클릭 이벤트를 발생시킴
+        (element as HTMLElement).click();
+      });
+  }
 
   rq.effect(async () => {
     const [
@@ -207,19 +217,49 @@
       return { toHTMLRenderers };
     }
 
-    const editor = new Editor({
+    editor = new Editor({
       el: div,
       height: 'calc(100dvh - 48px)',
       initialEditType: 'markdown',
       previewStyle: 'tab',
       useCommandShortcut: false,
+      events: {
+        keydown: function (mode: any, event: any) {
+          if (event.isComposing == false && event.isTrusted) {
+            if (event.ctrlKey && event.shiftKey && (event.key == 'z' || event.key == 'Z')) {
+              // 윈도우 : Ctrl + Shift + z 를 누르면 redo
+              editor.exec('redo');
+              return false;
+            } else if (event.metaKey && event.shiftKey && (event.key == 'z' || event.key == 'Z')) {
+              // MAC : Cmd + Shift + z 를 누르면 redo
+              editor.exec('redo');
+              return false;
+            } else if (event.ctrlKey && event.key == 'y') {
+              // 윈도우 : Ctrl + y 를 누르면 redo
+              editor.exec('redo');
+              return false;
+            } else if (event.metaKey && event.key == 'y') {
+              // MAC : Cmd + y 를 누르면 redo
+              editor.exec('redo');
+              return false;
+            } else if (event.ctrlKey && event.key == 'z') {
+              // 윈도우 : Ctrl + z 를 누르면 undo
+              editor.exec('undo');
+              return false;
+            } else if (event.metaKey && event.key == 'z') {
+              // MAC : Cmd + z 를 누르면 undo
+              editor.exec('undo');
+              return false;
+            }
+          }
+        }
+      },
       language: 'ko-KR',
       initialValue: body,
       placeholder: stripIndent(`
 			$$config
 			title: 제목
 			open: true
-			tags: #TAG1 #TAG2
 			$$
 			`).trim(),
       plugins: [
@@ -274,6 +314,8 @@
       editor.destroy();
     };
   });
+
+  export { editor, switchTab };
 </script>
 
 <div bind:this={div}></div>

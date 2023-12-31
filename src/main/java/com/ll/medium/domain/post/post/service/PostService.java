@@ -2,6 +2,7 @@ package com.ll.medium.domain.post.post.service;
 
 import com.ll.medium.domain.member.member.entity.Member;
 import com.ll.medium.domain.post.post.entity.Post;
+import com.ll.medium.domain.post.post.entity.PostConfig;
 import com.ll.medium.domain.post.post.repository.PostRepository;
 import com.ll.medium.global.globalMapper.GlobalMapper;
 import com.ll.medium.global.rsData.RsData.RsData;
@@ -22,15 +23,21 @@ public class PostService {
     private final GlobalMapper globalMapper;
 
     @Transactional
-    public void write(Member author, String title, String body, boolean isPublished) {
+    public void write(Member author, String title, String pureBody, boolean published) {
+        String body = genNewConfigStr(title, published, pureBody);
+
         Post post = Post.builder()
                 .author(author)
                 .title(title)
                 .body(body)
-                .published(isPublished)
+                .published(published)
                 .build();
 
         postRepository.save(post);
+    }
+
+    private String genNewConfigStr(String title, boolean published, String body) {
+        return new PostConfig(title, published, body).getBody();
     }
 
     public Object findTop30ByPublishedOrderByIdDesc(boolean isPublished) {
@@ -70,17 +77,16 @@ public class PostService {
                 "200",
                 "임시글 가져오기 성공",
                 opPost.orElseGet(() -> {
+                    String title = "임시글";
+                    boolean published = false;
+                    String body = "";
+                    body = genNewConfigStr(title, published, body);
+
                     Post post = Post.builder()
                             .author(author)
-                            .title("임시글")
-                            .body("""
-                                    $$config
-                                    title: 임시글
-                                    open: false
-                                    tags: #태그1 #태그2
-                                    $$
-                                    """.stripIndent().trim())
-                            .published(false)
+                            .title(title)
+                            .body(body)
+                            .published(published)
                             .build();
 
                     postRepository.save(post);
@@ -88,5 +94,21 @@ public class PostService {
                     return globalMapper.map(post, type);
                 })
         );
+    }
+
+    public Optional<Post> findLatest() {
+        return postRepository.findTop1ByOrderByIdDesc();
+    }
+
+    public boolean canEdit(Member actor, Post post) {
+        return post.getAuthor().equals(actor);
+    }
+
+    @Transactional
+    public void edit(Post post, String body) {
+        PostConfig postConfig = new PostConfig(body);
+        post.setTitle(postConfig.getTitle());
+        post.setPublished(postConfig.isOpen());
+        post.setBody(postConfig.getBody());
     }
 }

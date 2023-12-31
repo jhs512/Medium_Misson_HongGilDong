@@ -21,4 +21,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     <T> Optional<T> findById(long id, Class<T> type);
 
     <T> Optional<T> findTop1ByAuthorAndPublishedAndTitleOrderByIdDesc(Member author, boolean published, String title, Class<T> type);
+
+    Optional<Post> findTop1ByOrderByIdDesc();
 }

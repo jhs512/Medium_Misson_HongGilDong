@@ -1,6 +1,8 @@
 package com.ll.medium.global.app;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -69,7 +71,7 @@ public class AppConfig {
 
     @Value("${custom.temp.dirPath}")
     public void setTempDirPath(String tempDirPath) {
-        AppConfig.tempDirPath = tempDirPath;
+        this.tempDirPath = tempDirPath;
     }
 
     @Getter
@@ -77,7 +79,7 @@ public class AppConfig {
 
     @Value("${custom.genFile.dirPath}")
     public void setGenFileDirPath(String genFileDirPath) {
-        AppConfig.genFileDirPath = genFileDirPath;
+        this.genFileDirPath = genFileDirPath;
     }
 
     @Getter
@@ -85,6 +87,14 @@ public class AppConfig {
 
     @Value("${custom.site.name}")
     public void setSiteName(String name) {
-        AppConfig.siteName = name;
+        this.siteName = name;
+    }
+
+    @Getter
+    public static ObjectMapper objectMapper;
+
+    @Autowired
+    public void setObjectMapper(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
     }
 }
