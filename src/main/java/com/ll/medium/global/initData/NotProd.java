@@ -9,14 +9,13 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.IntStream;
 
 @Configuration
-@Profile("!prod")
+// @Profile("!prod") // TODO : prod 환경에서는 주석 처리해제해야 함
 @Slf4j
 @RequiredArgsConstructor
 public class NotProd {
@@ -52,7 +51,7 @@ public class NotProd {
                 postService.write(memberUser2, "제목 5", "내용 5", true);
                 postService.write(memberUser2, "제목 6", "내용 6", false);
 
-                IntStream.rangeClosed(7, 50).forEach(i -> {
+                IntStream.rangeClosed(7, 150).forEach(i -> {
                     postService.write(memberUser3, "제목 " + i, "내용 " + i, true);
                 });
             }

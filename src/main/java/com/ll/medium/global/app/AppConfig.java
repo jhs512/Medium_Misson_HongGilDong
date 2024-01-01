@@ -97,4 +97,7 @@ public class AppConfig {
     public void setObjectMapper(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
+
+    @Getter
+    public static int basePageSize = 200;
 }

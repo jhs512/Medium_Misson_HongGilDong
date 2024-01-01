@@ -185,6 +185,23 @@ class Rq {
       import.meta.env.VITE_CORE_FRONT_BASE_URL
     )}/member/socialLoginCallback?provierTypeCode=kakao`;
   }
+
+  public goToCurrentPageWithNewQueryStr(query: string) {
+    this.goTo(window.location.pathname + '?' + query);
+  }
+
+  public goToCurrentPageWithNewParam(name: string, value: string) {
+    // 현재 URL 객체 생성
+    const currentUrl = new URL(window.location.href);
+
+    // 쿼리 매개변수를 수정하기 위한 URLSearchParams 객체 생성
+    const searchParams = currentUrl.searchParams;
+
+    // 'page' 매개변수를 새 페이지 번호로 설정
+    searchParams.set(name, value);
+
+    this.goToCurrentPageWithNewQueryStr(searchParams.toString());
+  }
 }
 
 const rq = new Rq();

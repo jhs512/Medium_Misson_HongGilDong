@@ -1,4 +1,4 @@
-package com.ll.medium.global.jpa.BaseTime;
+package com.ll.medium.global.jpa.entity;
 
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;

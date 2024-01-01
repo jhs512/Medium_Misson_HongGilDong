@@ -5,17 +5,25 @@ import com.ll.medium.domain.post.post.dto.PostDto;
 import com.ll.medium.domain.post.post.dto.PostListItemDto;
 import com.ll.medium.domain.post.post.entity.Post;
 import com.ll.medium.domain.post.post.service.PostService;
+import com.ll.medium.global.app.AppConfig;
 import com.ll.medium.global.exceptions.GlobalException;
 import com.ll.medium.global.globalMapper.GlobalMapper;
 import com.ll.medium.global.rq.Rq.Rq;
 import com.ll.medium.global.rsData.RsData.RsData;
+import com.ll.medium.standard.base.KwTypeV1;
+import com.ll.medium.standard.base.PageDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,20 +40,28 @@ public class ApiV1PostController {
     private final PostService postService;
     private final GlobalMapper globalMapper;
 
-    public record GetItemsResponseBody(@NonNull List<PostListItemDto> items) {
+    public record GetItemsResponseBody(@NonNull PageDto<PostListItemDto> itemPage) {
+        public GetItemsResponseBody(Page<PostListItemDto> page) {
+            this(new PageDto<>(page));
+        }
     }
 
     @GetMapping(value = "", consumes = ALL_VALUE)
     @Operation(summary = "글 리스트")
-    public RsData<GetItemsResponseBody> getItems() {
-        Member member = rq.getMember();
-
-        List<PostListItemDto> posts = postService.findByPublished(true, PostListItemDto.class);
+    public RsData<GetItemsResponseBody> getItems(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "") String kw,
+            @RequestParam(defaultValue = "all") KwTypeV1 kwType
+    ) {
+        List<Sort.Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.desc("id"));
+        Pageable pageable = PageRequest.of(page - 1, AppConfig.getBasePageSize(), Sort.by(sorts));
+        Page<PostListItemDto> itemPage = postService.findByKw(kwType, kw, null, true, pageable, PostListItemDto.class);
 
         return RsData.of(
                 "200",
                 "성공",
-                new GetItemsResponseBody(posts)
+                new GetItemsResponseBody(itemPage)
         );
     }
 

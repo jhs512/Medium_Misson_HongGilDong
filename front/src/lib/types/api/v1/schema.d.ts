@@ -67,9 +67,9 @@ export interface components {
       modifyDate: string;
       /** Format: date-time */
       createDate: string;
+      authorUsername: string;
       /** Format: int64 */
       authorId: number;
-      authorUsername: string;
     };
     RsDataEditResponseBody: {
       resultCode: string;
@@ -119,7 +119,18 @@ export interface components {
       success: boolean;
     };
     GetItemsResponseBody: {
-      items: components["schemas"]["PostListItemDto"][];
+      itemPage: components["schemas"]["PageDtoPostListItemDto"];
+    };
+    PageDtoPostListItemDto: {
+      /** Format: int64 */
+      totalElementsCount: number;
+      /** Format: int64 */
+      pageElementsCount: number;
+      /** Format: int64 */
+      totalPagesCount: number;
+      /** Format: int32 */
+      number: number;
+      content: components["schemas"]["PostListItemDto"][];
     };
     PostListItemDto: {
       /** Format: int64 */
@@ -130,9 +141,9 @@ export interface components {
       modifyDate: string;
       /** Format: date-time */
       createDate: string;
+      authorUsername: string;
       /** Format: int64 */
       authorId: number;
-      authorUsername: string;
     };
     RsDataGetItemsResponseBody: {
       resultCode: string;
@@ -300,6 +311,13 @@ export interface operations {
   };
   /** 글 리스트 */
   getItems: {
+    parameters: {
+      query?: {
+        page?: number;
+        kw?: string;
+        kwType?: "TITLE" | "TITLE_OR_BODY" | "NAME" | "ALL";
+      };
+    };
     responses: {
       /** @description OK */
       200: {
