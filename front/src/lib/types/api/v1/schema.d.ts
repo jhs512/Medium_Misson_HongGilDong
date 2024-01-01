@@ -61,15 +61,15 @@ export interface components {
       body: string;
       /** Format: int64 */
       id: number;
+      /** Format: int64 */
+      authorId: number;
+      authorUsername: string;
       title: string;
       published: boolean;
       /** Format: date-time */
-      modifyDate: string;
-      /** Format: date-time */
       createDate: string;
-      authorUsername: string;
-      /** Format: int64 */
-      authorId: number;
+      /** Format: date-time */
+      modifyDate: string;
     };
     RsDataEditResponseBody: {
       resultCode: string;
@@ -135,15 +135,15 @@ export interface components {
     PostListItemDto: {
       /** Format: int64 */
       id: number;
+      /** Format: int64 */
+      authorId: number;
+      authorUsername: string;
       title: string;
       published: boolean;
       /** Format: date-time */
-      modifyDate: string;
-      /** Format: date-time */
       createDate: string;
-      authorUsername: string;
-      /** Format: int64 */
-      authorId: number;
+      /** Format: date-time */
+      modifyDate: string;
     };
     RsDataGetItemsResponseBody: {
       resultCode: string;
