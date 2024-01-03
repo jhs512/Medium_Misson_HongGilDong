@@ -11,7 +11,11 @@
   import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
   import '@toast-ui/editor-plugin-table-merged-cell/dist/toastui-editor-plugin-table-merged-cell.css';
 
-  const { body, viewer = false } = $props<{ body: string; viewer?: boolean }>();
+  const {
+    body,
+    viewer = false,
+    key = null
+  } = $props<{ body: string; viewer?: boolean; key?: any }>();
 
   let div: HTMLDivElement | undefined = $state();
   let editor: any;
