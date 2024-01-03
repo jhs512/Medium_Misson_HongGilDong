@@ -1,4 +1,5 @@
 <script lang="ts">
+  import ToastUiEditor from '$lib/components/ToastUiEditor.svelte';
   import type { components } from '$lib/types/api/v1/schema';
 
   const { data } = $props<{ data: { post: components['schemas']['PostDto'] } }>();
@@ -12,5 +13,7 @@
 <div>
   <h1>{post.title}</h1>
 
-  <p>{post.body}</p>
+  {#if post}
+    <ToastUiEditor body={post.body} viewer={true} />
+  {/if}
 </div>

@@ -11,7 +11,7 @@
   import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
   import '@toast-ui/editor-plugin-table-merged-cell/dist/toastui-editor-plugin-table-merged-cell.css';
 
-  const { body } = $props<{ body: string }>();
+  const { body, viewer = false } = $props<{ body: string; viewer?: boolean }>();
 
   let div: HTMLDivElement | undefined = $state();
   let editor: any;
@@ -217,51 +217,7 @@
       return { toHTMLRenderers };
     }
 
-    editor = new Editor({
-      el: div,
-      height: 'calc(100dvh - 48px)',
-      initialEditType: 'markdown',
-      previewStyle: 'tab',
-      useCommandShortcut: false,
-      events: {
-        keydown: function (mode: any, event: any) {
-          if (event.isComposing == false && event.isTrusted) {
-            if (event.ctrlKey && event.shiftKey && (event.key == 'z' || event.key == 'Z')) {
-              // 윈도우 : Ctrl + Shift + z 를 누르면 redo
-              editor.exec('redo');
-              return false;
-            } else if (event.metaKey && event.shiftKey && (event.key == 'z' || event.key == 'Z')) {
-              // MAC : Cmd + Shift + z 를 누르면 redo
-              editor.exec('redo');
-              return false;
-            } else if (event.ctrlKey && event.key == 'y') {
-              // 윈도우 : Ctrl + y 를 누르면 redo
-              editor.exec('redo');
-              return false;
-            } else if (event.metaKey && event.key == 'y') {
-              // MAC : Cmd + y 를 누르면 redo
-              editor.exec('redo');
-              return false;
-            } else if (event.ctrlKey && event.key == 'z') {
-              // 윈도우 : Ctrl + z 를 누르면 undo
-              editor.exec('undo');
-              return false;
-            } else if (event.metaKey && event.key == 'z') {
-              // MAC : Cmd + z 를 누르면 undo
-              editor.exec('undo');
-              return false;
-            }
-          }
-        }
-      },
-      language: 'ko-KR',
-      initialValue: body,
-      placeholder: stripIndent(`
-			$$config
-			title: 제목
-			open: true
-			$$
-			`).trim(),
+    const editorConfig = {
       plugins: [
         codeSyntaxHighlight,
         [chart, chartOptions],
@@ -307,8 +263,66 @@
             ];
           }
         }
-      }
-    });
+      },
+      initialValue: body
+    };
+
+    editor = viewer
+      ? Editor.factory({
+          el: div,
+          viewer,
+          ...editorConfig
+        })
+      : new Editor({
+          el: div,
+          height: 'calc(100dvh - 48px)',
+          initialEditType: 'markdown',
+          previewStyle: 'tab',
+          useCommandShortcut: false,
+          events: {
+            keydown: function (mode: any, event: any) {
+              if (event.isComposing == false && event.isTrusted) {
+                if (event.ctrlKey && event.shiftKey && (event.key == 'z' || event.key == 'Z')) {
+                  // 윈도우 : Ctrl + Shift + z 를 누르면 redo
+                  editor.exec('redo');
+                  return false;
+                } else if (
+                  event.metaKey &&
+                  event.shiftKey &&
+                  (event.key == 'z' || event.key == 'Z')
+                ) {
+                  // MAC : Cmd + Shift + z 를 누르면 redo
+                  editor.exec('redo');
+                  return false;
+                } else if (event.ctrlKey && event.key == 'y') {
+                  // 윈도우 : Ctrl + y 를 누르면 redo
+                  editor.exec('redo');
+                  return false;
+                } else if (event.metaKey && event.key == 'y') {
+                  // MAC : Cmd + y 를 누르면 redo
+                  editor.exec('redo');
+                  return false;
+                } else if (event.ctrlKey && event.key == 'z') {
+                  // 윈도우 : Ctrl + z 를 누르면 undo
+                  editor.exec('undo');
+                  return false;
+                } else if (event.metaKey && event.key == 'z') {
+                  // MAC : Cmd + z 를 누르면 undo
+                  editor.exec('undo');
+                  return false;
+                }
+              }
+            }
+          },
+          language: 'ko-KR',
+          placeholder: stripIndent(`
+          $$config
+          title: 제목
+          open: true
+          $$
+          `).trim(),
+          ...editorConfig
+        });
 
     return () => {
       editor.destroy();

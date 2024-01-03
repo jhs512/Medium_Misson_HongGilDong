@@ -99,5 +99,5 @@ public class AppConfig {
     }
 
     @Getter
-    public static int basePageSize = 200;
+    public static int basePageSize = 10;
 }
