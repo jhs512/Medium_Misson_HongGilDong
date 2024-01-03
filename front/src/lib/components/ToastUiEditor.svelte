@@ -328,6 +328,24 @@
           ...editorConfig
         });
 
+    editor.addCommand('markdown', 'openImageUploader', () => {
+      window.open('http://onpaste.com/');
+      return true;
+    });
+
+    editor.removeToolbarItem('image');
+    editor.insertToolbarItem(
+      { groupIndex: 3, itemIndex: 1 },
+      {
+        name: 'img',
+        tooltip:
+          '이미지를 드래그 앤 드롭하세요. 혹은 붙여넣기하세요. 마지막에 I 버튼 눌러서 URL 생성하세요.',
+        className: 'toastui-editor-toolbar-icons',
+        style: { backgroundPosition: '-309px 3px' },
+        command: 'openImageUploader'
+      }
+    );
+
     return () => {
       editor.destroy();
     };
