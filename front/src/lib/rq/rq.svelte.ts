@@ -16,7 +16,7 @@ toastr.options = {
 class Rq {
   public member: components['schemas']['MemberDto'];
   private shouldLogoutPagePaths = ['/member/login', '/member/join'];
-  private shouldLoginPagePaths = ['/post/myList'];
+  private shouldLoginPagePaths = ['/p/myList'];
 
   constructor() {
     let id = $state(0);
@@ -164,7 +164,7 @@ class Rq {
     const { data } = await this.apiEndPoints().POST('/api/v1/posts/temp');
 
     if (data) {
-      this.goTo(`/post/${data.data.item.id}/edit`);
+      this.goTo(`/p/${data.data.item.id}/edit`);
     }
   }
 

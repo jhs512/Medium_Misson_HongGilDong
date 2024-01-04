@@ -10,6 +10,8 @@ export const load: PageLoad = async ({ params, fetch }) => {
     }
   });
 
+  console.log(params.id);
+
   return {
     post: data!.data.item
   };

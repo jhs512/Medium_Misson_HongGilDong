@@ -91,6 +91,6 @@
 
 {#if post}
   {#key post.id}
-    <ToastUiEditor bind:this={toastUiEditor} body={post.body} />
+    <ToastUiEditor bind:this={toastUiEditor} body={post.body} height={'calc(100dvh - 64px)'} />
   {/key}
 {/if}

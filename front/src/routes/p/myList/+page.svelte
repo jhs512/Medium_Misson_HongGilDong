@@ -19,7 +19,7 @@
   <ul>
     {#each posts as post}
       <li>
-        <a href="/post/{post.id}">{post.id}. {post.title}</a>
+        <a href="/p/{post.id}">{post.id}. {post.title}</a>
       </li>
     {/each}
   </ul>

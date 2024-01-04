@@ -14,8 +14,8 @@
   const {
     body,
     viewer = false,
-    key = null
-  } = $props<{ body: string; viewer?: boolean; key?: any }>();
+    height = 'calc(100dvh - 100px)'
+  } = $props<{ body: string; viewer?: boolean; height?: string }>();
 
   let div: HTMLDivElement | undefined = $state();
   let editor: any;
@@ -279,7 +279,7 @@
         })
       : new Editor({
           el: div,
-          height: 'calc(100dvh - 48px)',
+          height,
           initialEditType: 'markdown',
           previewStyle: 'tab',
           useCommandShortcut: false,

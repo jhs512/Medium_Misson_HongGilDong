@@ -2,6 +2,7 @@
   import { page } from '$app/stores';
   import rq from '$lib/rq/rq.svelte';
   import type { components } from '$lib/types/api/v1/schema';
+  import Pagination from '$lib/components/Pagination.svelte';
 
   let postPage: components['schemas']['PageDtoPostListItemDto'] | null = $state(null);
 
@@ -44,32 +45,33 @@
 
     rq.goToCurrentPageWithNewQueryStr(searchParams.toString());
   }
-
-  // 페이지네이션 범위 계산 함수
-  function calculatePaginationRange(current: number, total: number, delta = 4) {
-    const left = current - delta;
-    const right = current + delta;
-    const range = [] as { no: number; text: string }[];
-
-    for (let i = 1; i <= total; i++) {
-      if (i === 1) {
-        range.push({ no: i, text: `${i}` });
-      } else if (i == left - 1) {
-        range.push({ no: i, text: `...` });
-      } else if (i >= left && i <= right) {
-        range.push({ no: i, text: `${i}` });
-      } else if (i === total) {
-        range.push({ no: i, text: `${i}` });
-      } else if (i == right + 1) {
-        range.push({ no: i, text: `...` });
-      }
-    }
-
-    return range;
-  }
-
-  const pageDelta = 2;
 </script>
+
+<div class="flex-1 flex justify-center items-center px-3">
+  <div class="container w-full">
+    <h1>
+      <i class="fa-solid fa-list"></i> 글
+    </h1>
+
+    {#if postPage != null}
+      <Pagination page={postPage} />
+
+      <hr />
+
+      <ul>
+        {#each postPage.content as post}
+          <li>
+            <a href="/p/{post.id}">{post.id}. {post.title}</a>
+          </li>
+        {/each}
+      </ul>
+
+      <hr />
+
+      <Pagination page={postPage} />
+    {/if}
+  </div>
+</div>
 
 <div>
   <h1>All Posts</h1>
@@ -87,35 +89,4 @@
   </form>
 
   <hr />
-
-  {#if postPage != null}
-    <div>
-      <div>현재 페이지 : {postPage.number}</div>
-      <div>총 항목 : {postPage.totalElementsCount}개</div>
-      <div>현재 페이지 항목 : {postPage.pageElementsCount}개</div>
-    </div>
-
-    <hr />
-
-    <div class="flex gap-2">
-      {#each calculatePaginationRange(postPage.number, postPage.totalPagesCount, pageDelta) as pageNumber}
-        <button
-          class={`${pageNumber.no == postPage.number ? 'text-red-500' : ''}`}
-          on:click={() => rq.goToCurrentPageWithNewParam('page', `${pageNumber.no}`)}
-        >
-          {pageNumber.text}
-        </button>
-      {/each}
-    </div>
-
-    <hr />
-
-    <ul>
-      {#each postPage.content as post}
-        <li>
-          <a href="/post/{post.id}">{post.id}. {post.title}</a>
-        </li>
-      {/each}
-    </ul>
-  {/if}
 </div>
