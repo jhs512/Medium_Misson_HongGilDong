@@ -51,6 +51,7 @@
     "@toast-ui/editor-plugin-uml": "^3.0.1",
     "hotkeys-js": "^3.13.3",
     "openapi-fetch": "^0.8.2",
+    "svelte-gestures": "^1.5.2",
     "toastr": "^2.1.4"
   }
 }

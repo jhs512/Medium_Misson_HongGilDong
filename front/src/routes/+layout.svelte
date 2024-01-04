@@ -1,7 +1,8 @@
 <script lang="ts">
+  import { untrack } from 'svelte';
+  import { page } from '$app/stores';
   import rq from '$lib/rq/rq.svelte';
   import '$lib/app.css';
-  import { untrack } from 'svelte';
 
   const { children } = $props();
 
@@ -10,9 +11,25 @@
       rq.initAuth();
     });
   });
+
+  function toggleHeader() {
+    const header = document.querySelector('header') as HTMLElement;
+
+    if (header.classList.contains('hidden')) {
+      header.classList.remove('hidden');
+    } else {
+      header.classList.add('hidden');
+    }
+  }
+
+  rq.effect(() => {
+    document.addEventListener('dblclick', function (event) {
+      toggleHeader();
+    });
+  });
 </script>
 
-<header class="navbar bg-base-100">
+<header class="navbar bg-base-100 fixed z-50 w-full shadow">
   <div class="navbar-start">
     <div class="dropdown">
       <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
@@ -102,13 +119,24 @@
         <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
       </form>
 
-      <form action="/p/list" class="bg-base rounded flex flex-col gap-6">
+      <form
+        action="/p/list"
+        class="bg-base rounded flex flex-col gap-6"
+        onsubmit={() => {
+        const searchFormModal = (document.querySelector('#searchFormModal') as HTMLDialogElement);
+        searchFormModal.close();
+      }}
+      >
         <div class="form-control">
           <label class="label">
             <span class="label-text">검색필터</span>
           </label>
 
-          <select name="kwType" class="select select-bordered">
+          <select
+            name="kwType"
+            class="select select-bordered"
+            value={$page.url.searchParams.get('kwType') ?? 'ALL'}
+          >
             <option value="ALL">전체</option>
             <option value="TITLE">제목</option>
             <option value="TITLE_OR_BODY">제목,내용</option>
@@ -121,7 +149,14 @@
             <span class="label-text">검색어</span>
           </label>
 
-          <input placeholder="검색어" class="input input-bordered" name="kw" type="search" />
+          <input
+            placeholder="검색어"
+            class="input input-bordered"
+            name="kw"
+            type="search"
+            value={$page.url.searchParams.get('kw') ?? ''}
+            autocomplete="off"
+          />
         </div>
 
         <div>

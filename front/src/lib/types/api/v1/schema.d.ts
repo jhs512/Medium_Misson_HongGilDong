@@ -48,8 +48,8 @@ export interface components {
       statusCode: number;
       msg: string;
       data: components["schemas"]["Empty"];
-      fail: boolean;
       success: boolean;
+      fail: boolean;
     };
     EditRequestBody: {
       body: string;
@@ -61,15 +61,15 @@ export interface components {
       body: string;
       /** Format: int64 */
       id: number;
-      /** Format: int64 */
-      authorId: number;
-      authorUsername: string;
       title: string;
       published: boolean;
       /** Format: date-time */
       createDate: string;
       /** Format: date-time */
       modifyDate: string;
+      authorUsername: string;
+      /** Format: int64 */
+      authorId: number;
     };
     RsDataEditResponseBody: {
       resultCode: string;
@@ -77,8 +77,8 @@ export interface components {
       statusCode: number;
       msg: string;
       data: components["schemas"]["EditResponseBody"];
-      fail: boolean;
       success: boolean;
+      fail: boolean;
     };
     MakeTempResponseBody: {
       item: components["schemas"]["PostDto"];
@@ -89,8 +89,8 @@ export interface components {
       statusCode: number;
       msg: string;
       data: components["schemas"]["MakeTempResponseBody"];
-      fail: boolean;
       success: boolean;
+      fail: boolean;
     };
     LoginRequestBody: {
       username: string;
@@ -115,8 +115,8 @@ export interface components {
       statusCode: number;
       msg: string;
       data: components["schemas"]["LoginResponseBody"];
-      fail: boolean;
       success: boolean;
+      fail: boolean;
     };
     GetItemsResponseBody: {
       itemPage: components["schemas"]["PageDtoPostListItemDto"];
@@ -135,15 +135,15 @@ export interface components {
     PostListItemDto: {
       /** Format: int64 */
       id: number;
-      /** Format: int64 */
-      authorId: number;
-      authorUsername: string;
       title: string;
       published: boolean;
       /** Format: date-time */
       createDate: string;
       /** Format: date-time */
       modifyDate: string;
+      authorUsername: string;
+      /** Format: int64 */
+      authorId: number;
     };
     RsDataGetItemsResponseBody: {
       resultCode: string;
@@ -151,8 +151,8 @@ export interface components {
       statusCode: number;
       msg: string;
       data: components["schemas"]["GetItemsResponseBody"];
-      fail: boolean;
       success: boolean;
+      fail: boolean;
     };
     GetItemResponseBody: {
       item: components["schemas"]["PostDto"];
@@ -163,8 +163,8 @@ export interface components {
       statusCode: number;
       msg: string;
       data: components["schemas"]["GetItemResponseBody"];
-      fail: boolean;
       success: boolean;
+      fail: boolean;
     };
     GetMineResponseBody: {
       items: components["schemas"]["PostListItemDto"][];
@@ -175,8 +175,8 @@ export interface components {
       statusCode: number;
       msg: string;
       data: components["schemas"]["GetMineResponseBody"];
-      fail: boolean;
       success: boolean;
+      fail: boolean;
     };
     MeResponseBody: {
       item: components["schemas"]["MemberDto"];
@@ -187,8 +187,8 @@ export interface components {
       statusCode: number;
       msg: string;
       data: components["schemas"]["MeResponseBody"];
-      fail: boolean;
       success: boolean;
+      fail: boolean;
     };
   };
   responses: never;

@@ -14,7 +14,7 @@
   const {
     body,
     viewer = false,
-    height = 'calc(100dvh - 100px)'
+    height = 'calc(100dvh)'
   } = $props<{ body: string; viewer?: boolean; height?: string }>();
 
   let div: HTMLDivElement | undefined = $state();

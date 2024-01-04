@@ -58,6 +58,7 @@ public class Rq {
         ResponseCookie cookie = ResponseCookie.from(name, value)
                 .path("/")
                 .domain(getSiteCookieDomain())
+                .sameSite("Strict")
                 .secure(true)
                 .httpOnly(true)
                 .build();

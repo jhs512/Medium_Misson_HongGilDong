@@ -1,17 +1,14 @@
 <script lang="ts">
   import { page } from '$app/stores';
-  import rq from '$lib/rq/rq.svelte';
-  import type { components } from '$lib/types/api/v1/schema';
   import Pagination from '$lib/components/Pagination.svelte';
+  import rq from '$lib/rq/rq.svelte';
 
-  let postPage: components['schemas']['PageDtoPostListItemDto'] | null = $state(null);
-
-  rq.effect(async () => {
+  async function loadPostPage() {
     const kw = $page.url.searchParams.get('kw') ?? '';
     const kwType = $page.url.searchParams.get('kwType') ?? 'ALL';
     const page_ = $page.url.searchParams.get('page') ?? '1';
 
-    const { data } = await rq.apiEndPoints().GET('/api/v1/posts', {
+    const { data, error } = await rq.apiEndPoints().GET('/api/v1/posts', {
       params: {
         query: {
           kw,
@@ -21,29 +18,7 @@
       }
     });
 
-    if (data) {
-      postPage = data.data.itemPage;
-    }
-  });
-
-  function submitSearchForm(this: HTMLFormElement) {
-    const form: HTMLFormElement = this;
-
-    form.kw.value = form.kw.value.trim();
-
-    if (form.kw.value.length === 0) {
-      rq.msgError('검색어를 입력해주세요.');
-      form.kw.focus();
-      return;
-    }
-    const formData = new FormData(form);
-    const searchParams = new URLSearchParams();
-
-    for (const [key, value] of formData) {
-      searchParams.append(key, value.toString());
-    }
-
-    rq.goToCurrentPageWithNewQueryStr(searchParams.toString());
+    return data!;
   }
 </script>
 
@@ -53,40 +28,26 @@
       <i class="fa-solid fa-list"></i> 글
     </h1>
 
-    {#if postPage != null}
-      <Pagination page={postPage} />
+    {#await loadPostPage()}
+      loading...
+    {:then { data: { itemPage } }}
+      <Pagination page={itemPage} />
 
-      <hr />
+      <hr class="my-4" />
 
-      <ul>
-        {#each postPage.content as post}
-          <li>
-            <a href="/p/{post.id}">{post.id}. {post.title}</a>
+      <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2">
+        {#each itemPage.content as post (post.id)}
+          <li class="card bg-base-100 shadow-xl">
+            <div class="card-body">
+              <a class="card-title" href="/p/{post.id}">{post.id}. {post.title}</a>
+            </div>
           </li>
         {/each}
       </ul>
 
-      <hr />
+      <hr class="my-4" />
 
-      <Pagination page={postPage} />
-    {/if}
+      <Pagination page={itemPage} />
+    {/await}
   </div>
-</div>
-
-<div>
-  <h1>All Posts</h1>
-
-  <form on:submit|preventDefault={submitSearchForm}>
-    <select name="kwType" value={$page.url.searchParams.get('kwType') ?? 'TITLE'}>
-      <option value="TITLE">제목</option>
-      <option value="TITLE_OR_BODY">제목,내용</option>
-      <option value="NAME">작성자</option>
-      <option value="ALL">전체</option>
-    </select>
-
-    <input type="text" name="kw" placeholder="Search..." value={$page.url.searchParams.get('kw')} />
-    <button type="submit">Search</button>
-  </form>
-
-  <hr />
 </div>

@@ -174,7 +174,9 @@ class Rq {
 
   public effect(fn: () => void) {
     $effect(() => {
-      fn();
+      const onDestroy: any = fn();
+
+      if (onDestroy) return onDestroy;
     });
   }
 
