@@ -61,9 +61,9 @@ export interface components {
       body: string;
       /** Format: int64 */
       id: number;
+      authorUsername: string;
       /** Format: int64 */
       authorId: number;
-      authorUsername: string;
       title: string;
       published: boolean;
       /** Format: date-time */
@@ -135,9 +135,9 @@ export interface components {
     PostListItemDto: {
       /** Format: int64 */
       id: number;
+      authorUsername: string;
       /** Format: int64 */
       authorId: number;
-      authorUsername: string;
       title: string;
       published: boolean;
       /** Format: date-time */

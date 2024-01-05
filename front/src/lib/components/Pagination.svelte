@@ -1,12 +1,6 @@
 <script lang="ts">
   import rq from '$lib/rq/rq.svelte';
-
-  type PageDto = {
-    totalElementsCount: number;
-    pageElementsCount: number;
-    totalPagesCount: number;
-    number: number;
-  };
+  import type { PageDto } from '$lib/types';
 
   const { page, pageDelta = 1 } = $props<{ page: PageDto; pageDelta?: number }>();
 
@@ -15,6 +9,8 @@
     const left = current - delta;
     const right = current + delta;
     const range = [] as { no: number; text: string }[];
+
+    if (total <= 1) return [];
 
     for (let i = 1; i <= total; i++) {
       if (i === 1) {

@@ -51,7 +51,7 @@ public class ApiV1PostController {
     public RsData<GetItemsResponseBody> getItems(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "") String kw,
-            @RequestParam(defaultValue = "all") KwTypeV1 kwType
+            @RequestParam(defaultValue = "ALL") KwTypeV1 kwType
     ) {
         List<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("id"));

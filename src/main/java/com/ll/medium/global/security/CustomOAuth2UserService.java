@@ -27,12 +27,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
         String oauthId = oAuth2User.getName();
+        String providerTypeCode = userRequest.getClientRegistration().getRegistrationId().toUpperCase();
+
         Map<String, Object> attributes = oAuth2User.getAttributes();
         Map attributesProperties = (Map) attributes.get("properties");
 
         String nickname = (String) attributesProperties.get("nickname");
         String profileImgUrl = (String) attributesProperties.get("profile_image");
-        String providerTypeCode = userRequest.getClientRegistration().getRegistrationId().toUpperCase();
         String username = providerTypeCode + "__%s".formatted(oauthId);
         Member member = memberService.whenSocialLogin(providerTypeCode, username, nickname, profileImgUrl).getData();
 
